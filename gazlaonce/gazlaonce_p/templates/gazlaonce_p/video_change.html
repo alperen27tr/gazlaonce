@@ -136,8 +136,9 @@ Admin
                 $('tbody').empty();    
 
                 data.forEach(function (data_list) {
+                    debugger;
                     var checkboxId = "myCheckboxId" + data_list.id;
-                    var checkbox = data_list.is_active === "True" ?
+                    var checkbox = data_list.is_active == true ?
                     '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '" checked>' :
                     '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '">';
         
@@ -224,15 +225,11 @@ Admin
                     var drpsubCategoriId = data_list.categories;    
                     
                     $.ajax({
-                        url: '{% url "get_data_subcategories" %}?basecategory_id=' + drpsubCategoriId,
+                        url: '{% url "update_videos_activity" %}?basecategory_id=' + drpsubCategoriId,
                         type: 'GET',
                         dataType: 'json',
                         success: function (data) {
                             var select = $('select[name="state2"]');
-                        
-                            $.each(data, function (index, item) {
-                                select.append('<option value="' + item.id + '">' + item.categoriesName + '</option>');
-                            });
                         },
                         error: function () {
                             alert('Veriler alınamadı.');
@@ -278,9 +275,9 @@ Admin
         var checkboxId = $(checkbox).attr('id');
         var numericId = checkboxId.replace('myCheckboxId', '');
         if ($(checkbox).is(':checked')) {
-            var active = "True";
+            var active = 1;
         } else {
-            var active = "False";
+            var active = 0;
         }
         ActiveVideosDB(numericId, active);
     }
@@ -291,8 +288,8 @@ Admin
             url: "{% url 'update_videos_activity' %}",
             data: {
                 csrfmiddlewaretoken: "{{ csrf_token }}",
-                video_id: numericId,
-                active: active
+                'video_id': numericId,
+                'active': active
             },
             success: function () {
                 alert("Video Güncellendi!");

@@ -71,8 +71,6 @@ def update_video_category(request):
         video_link = request.POST.get("videoLink")
         base_categories_id = request.POST.get("base_categories_id")
         sub_categories_id = request.POST.get("sub_categories_id")
-        print(video_id)
-
         try:
             item =  base_videos.objects.get(id=video_id)
             item.title = video_title

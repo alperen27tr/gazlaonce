@@ -36,8 +36,14 @@ def create_post_video(request):
 
 def get_data_changevideos(request):
     data = base_videos.objects.all()  
-    data_list = [{'id':changevideos.id, 'title': changevideos.title,'link':changevideos.link,'base_categories_id':changevideos.base_categories.id,'base_categories_names':changevideos.base_categories.base_category_names,'is_active':changevideos.is_active,'categories_id':changevideos.categories.id,'categories_name':changevideos.categories.categoriesName}
+     
+        
+    for changevideos in data:        
+        print(changevideos.is_active)
+        
+    data_list =[{'id':changevideos.id, 'title': changevideos.title,'link':changevideos.link,'base_categories_id':changevideos.base_categories.id,'base_categories_names':changevideos.base_categories.base_category_names,'is_active':changevideos.is_active,'categories_id':changevideos.categories.id,'categories_name':changevideos.categories.categoriesName}
                  for changevideos in data]
+    
     return JsonResponse(data_list, safe=False)
 
 def delete_base_videos_admin(request):
@@ -77,13 +83,13 @@ def video_gallery_index(request):
 
 def update_videos_activity(request):
     if request.method == "POST":
-        video_id = request.POST.get("id")
+        video_id = request.POST.get("video_id")
         is_active = request.POST.get("active")
         try:
-            video_id =  base_videos.objects.get(id=video_id)
-            video_id.is_active = is_active
-            video_id.date_update = timezone.now()
-            video_id.save()
+            video = base_videos.objects.get(id=video_id)
+            video.is_active = str(is_active)
+            video.date_update = timezone.now()
+            video.save()
             return JsonResponse({"message": "Kategori güncellendi."})
         except  base_videos.DoesNotExist:
             return JsonResponse({"message": "Kategori bulunamadı."})
