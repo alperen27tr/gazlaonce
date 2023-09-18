@@ -40,7 +40,7 @@ urlpatterns= [
     path('update_videos_activity/', base_videos_views.update_videos_activity, name='update_videos_activity'),
     path('get_motocycle_videos/', base_videos_views.get_motocycle_videos, name='get_motocycle_videos'),
     path('get_data_opened_video_page_videos', base_videos_views.get_data_opened_video_page_videos, name='get_data_opened_video_page_videos'),
-    path('get_data_subcategories_list', base_category_views.get_data_subcategories_list, name='get_data_subcategories_list'),
+    path('get_data_subcategories_list', sub_category_views.get_data_subcategories_list, name='get_data_subcategories_list'),
     path('update_video_category', views.update_video_category, name='update_video_category'),
 ]
 

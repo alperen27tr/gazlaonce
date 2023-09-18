@@ -80,10 +80,10 @@ def update_videos_activity(request):
         video_id = request.POST.get("id")
         is_active = request.POST.get("active")
         try:
-            category =  base_videos.objects.get(id=video_id)
-            category.is_active = is_active
-            category.date_update = timezone.now()
-            category.save()
+            video_id =  base_videos.objects.get(id=video_id)
+            video_id.is_active = is_active
+            video_id.date_update = timezone.now()
+            video_id.save()
             return JsonResponse({"message": "Kategori güncellendi."})
         except  base_videos.DoesNotExist:
             return JsonResponse({"message": "Kategori bulunamadı."})

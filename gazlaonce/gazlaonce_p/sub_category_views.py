@@ -51,3 +51,16 @@ def update_sub_category_activity(request):
             return JsonResponse({"message": "Kategori bulunamadı."})
     else:
         return JsonResponse({"message": "Geçersiz istek."})
+    
+
+# altkategori düzenlemedeki base category
+def get_data_subcategories_list(request):
+    base_category_list = base_category.objects.filter(is_active="True").values('id', 'base_category_names','is_active') 
+    data = []
+    for video in base_category_list:
+        data.append({
+            'id': str(video['id']),
+            'base_category_names': str(video['base_category_names']),
+            'is_active': str(video['is_active'])
+        }) 
+    return JsonResponse(data, safe=False)

@@ -178,11 +178,11 @@ Admin
                 category_id: categoryId
             },
             success: function () {
-                alert("Alt kategori silindi!");
+                alert("Video silindi!");
                 location.reload();
             },
             error: function (response) {
-                alert("Alt kategori silinirken bir hata oluştu.");
+                alert("Video silinirken bir hata oluştu.");
             }
         });
     }
@@ -221,10 +221,7 @@ Admin
                     //çalısmıyor                    
                     $('select[name="state2"]').val(data_list.categories);
                     var select2 = $('select[name="state2"]');
-                    var drpsubCategoriId = data_list.categories;
-                    
-                    
-                    
+                    var drpsubCategoriId = data_list.categories;    
                     
                     $.ajax({
                         url: '{% url "get_data_subcategories" %}?basecategory_id=' + drpsubCategoriId,
@@ -255,7 +252,6 @@ Admin
         var videoLink = $('#VideoLinkInput').val();
         var base_categories_id = $('select[name="state1"]').val();
         var sub_categories_id = $('select[name="state2"]').val();
-        alert(videoId +"id--"+videoName +"name++"+videoLink +"link--"+base_categories_id +"base++"+sub_categories_id +"sub--");
         $.ajax({
         type: "POST",
         url: "{% url 'update_video_category' %}",
@@ -268,43 +264,14 @@ Admin
             'sub_categories_id':sub_categories_id
         },
         success: function () {
-            alert("Kategori adı güncellendi!");
+            alert("Video güncellendi!");
             location.reload();
         },
         error: function (response) {
-            alert("Kategori adı güncellenirken bir hata oluştu.");
+            alert("Video güncellenirken bir hata oluştu.");
         }
     });
 });
-
-    // Kategori güncelleme düğmelerine tıklanınca 
-    $(".update-category").on("click", function () {
-        var categoryId = $(this).data("category-id");
-        var categoryName = $(this).data("category-name");
-        var checkboxId = "myCheckboxId" + categoryId;
-        var isCheckboxChecked = $("#" + checkboxId).is(":checked");
-        var url = "/update_video_category/"; 
-    
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                category_id: categoryId,
-                category_name: categoryName,
-                is_active: isCheckboxChecked
-            },
-            success: function () {
-                alert("Kategori güncellendi!");
-                location.reload();
-            },
-            error: function (response) {
-                alert("Kategori güncellenirken bir hata oluştu.");
-            }
-        });
-    });
-    
-    
 
     //videoları aktif/pasif yapma  (ÇALIŞMIYOR!)
     function ActiveVideos(checkbox) {
@@ -328,11 +295,11 @@ Admin
                 active: active
             },
             success: function () {
-                alert("Kategori Güncellendi!");
+                alert("Video Güncellendi!");
                 location.reload();
             },
             error: function (response) {
-                alert("Kategori Güncellenirken Bir Hata Oluştu.");
+                alert("Video Güncellenirken Bir Hata Oluştu.");
             }
         });
     }
