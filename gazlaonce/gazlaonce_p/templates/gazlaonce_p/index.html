@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}Ana Sayfa{% endblock %}
+
+
+{% block content %}
+
+<header class="py-3 bg-light border-bottom mb-3" style="height: 200px;">
+    <div class="container d-flex flex-column justify-content-center align-items-center h-100">
+        <h1 class="fw-bolder text-center">Tutkuyla Başladığın Yolculukta, Eğitimle Güvende Devam Et!</h1>
+        <p class="lead mb-0 text-center">Bir motosiklet rehber platformu...</p>
+    </div>
+</header>
+
+
+<header class="bg-light border-bottom"> 
+    <div class="container">
+        <div class="text-center my-2">
+            <h3>Son Eklenen Videolar</h3>
+            <div id="carouselExample" class="carousel slide" >
+                <div id="videolarlistSlider" class="carousel-inner">
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="text-center my-2">
+        <h3>Random Videolar</h3>
+    </div>
+</div>
+
+{% include 'partials/_videogallery.html' %}
+
+<script>
+    
+    // Son eklenen videolar kısmı
+    $(document).ready(function() {
+        fetchVideos1(); 
+    });
+    function fetchVideos1() {
+        $.ajax({
+            url: '{% url "get_data_index_videos" %}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(video_data) {
+                renderVideos1(video_data);
+            },
+            error: function() {
+                $('#headername').text('Veri alınamadı.');
+            }
+        });
+    }
+    function renderVideos1(videoData) {
+        $.each(videoData, function(index, video) {
+            var link = video.link;
+            if (index==0){
+                var videoHTML = '<div class="carousel-item active">' +
+                    '<iframe width="90%" height="500" src="' + link + '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>'+                
+                    '</div>';
+    
+                $("#videolarlistSlider").append(videoHTML);
+            }
+            else{
+                var videoHTML = '<div class="carousel-item ">' +
+                    '<iframe width="90%" height="500" src="' + link + '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>'+                
+                    '</div>';
+    
+                $("#videolarlistSlider").append(videoHTML);
+            }
+           
+        });
+    }
+
+    //rastgele 20 video getirme
+        $(document).ready(function() {
+            fetchVideos();
+        });
+    
+        function fetchVideos() {
+            $.ajax({
+                url: 'video_gallery_index/', 
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    renderVideos(data);
+                    
+                },
+                error: function() {
+                    $('#headername').text('Veri alınamadı.');
+                }
+            });
+        }
+    
+        function renderVideos(videoData) {
+            $("#videolarlist").empty();
+    
+            // Verileri işleme ve görüntüleme
+            $.each(videoData, function(index, video) {
+                var title = video.title;
+                var link = video.link;
+    
+                // Verileri ekrana yazdırma   
+                var videoHTML = '<div class="col-md-3 pb-video">' +
+                    '<iframe width="100%" height="230" src="' + link + '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' +
+                    '<label class="form-control label-warning text-center">' + title + '</label>' +
+                    '</div>';
+    
+                $("#videolarlist").append(videoHTML);
+            });
+        }
+    
+    
+
+
+</script>
+
+
+
+    
+
+
+{% endblock %}

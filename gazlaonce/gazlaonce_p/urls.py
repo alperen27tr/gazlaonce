@@ -1,0 +1,46 @@
+from django.urls import path
+from . import base_category_views, views
+
+
+urlpatterns= [
+    path('get_data_subcategories', views.get_data_subcategories, name='get_data_subcategories'),
+    path('get-data', views.get_data, name='get_data'),
+    path('get_data_header', views.get_data_header, name='get_data_header'),
+    path('get-data_videos', views.get_data_videos, name='get_data_videos'),
+    path('get_data_index_videos/', views.get_data_index_videos, name='get_data_index_videos'),
+    path("",views.index,name="home"),
+    path("index",views.index),
+    path("videos",views.videos,name="videos"),
+
+    
+    path("videoUpdateGet",views.videoUpdateGet,name="videoUpdateGet"),
+
+    path("video_change",views.video_change,name="video_change"),
+    path("get_data_base_category",base_category_views.get_data_base_category,name="get_data_base_category"),
+    path('create-post/', views.create_post, name='create_post'),  
+    path('create_post_video/', views.create_post_video, name='create_post_video'),  
+    path('base_categories/', views.base_category_list_view, name='base_categories'),
+
+    path("subcategory_change",views.subcategory_change,name="subcategory_change"),
+    path("get_subcategories/",views.get_subcategories,name="get_subcategories"),
+    path("create_post_subcategory/",views.create_post_subcategory,name="create_post_subcategory"),
+    path("delete_subcategory/",views.delete_subcategory,name="delete_subcategory"),
+   
+
+    path("base_category_change",base_category_views.base_category_change,name="base_category_change"),
+    path('get_categories/', base_category_views.get_categories, name='get_categories'),
+    path('delete_category/', views.delete_category, name='delete_category'),
+    path('update_category/', views.update_category, name='update_category'),
+    path('update_base_category_activity/', views.update_base_category_activity, name='update_base_category_activity'),
+    path('update_sub_category_activity/', views.update_sub_category_activity, name='update_sub_category_activity'),
+    path('get_data_changevideos/', views.get_data_changevideos, name='get_data_changevideos'),
+    path('delete_base_videos_admin/', views.delete_base_videos_admin, name='delete_base_videos_admin'),
+    path('update_video_admin/', views.update_video_admin, name='update_video_admin'),
+    path('video_gallery_index/', views.video_gallery_index, name='video_gallery_index'),
+    path('update_videos_activity/', views.update_videos_activity, name='update_videos_activity'),
+    path('get_motocycle_videos/', views.get_motocycle_videos, name='get_motocycle_videos'),
+    path('get_data_opened_video_page_videos', views.get_data_opened_video_page_videos, name='get_data_opened_video_page_videos'),
+    path('get_data_subcategories_list', views.get_data_subcategories_list, name='get_data_subcategories_list'),
+    path('update_video_category', views.update_video_category, name='update_video_category'),
+]
+

@@ -1,0 +1,201 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <div class="navbar-brand-image" style="background-image: url('static/blog/img/stable-diffusion-xl.jpg');"></div>
+      GazlamadanÖnce
+    </a>
+    <button class="navbar-toggler fixed-top bg-body-tertiary" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Ana Sayfa</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Video Kategorileri
+          </a>
+          <ul id='motorcycle_navbar' class="dropdown-menu">
+           
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="admin1" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">Admin</a>
+          <ul id='admin1_navbar' class="dropdown-menu">
+            <li><a id="videoduzenleme" class="dropdown-item" href="{% url 'base_category_change' %}">Ana Kategori
+                Düzenleme</a></li>
+            <li><a id="anakategoriduzenleme" class="dropdown-item" href="{% url 'subcategory_change' %}">Alt Kategori
+                Düzenleme</a></li>
+            <li><a id="altkategoriduzenleme" class="dropdown-item" href="{% url 'video_change' %}">Video Düzenleme</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Giriş Yap</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Kayıt Ol</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<style>
+  /* Navbar'ın arka plan rengini siyah yapar */
+  .navbar {
+    background-color: rgb(0, 0, 0) !important;
+  }
+
+  /* Navbar'ı gölgelendirme ile vurgula */
+  .navbar {
+    box-shadow: 0 2px 2px rgb(181 181 181);
+    /* Gölgelendirme efekti */
+    transition: box-shadow 0.3s ease-in-out;
+    /* Gölgelendirme değişikliğini yumuşak bir şekilde geçiş yapar */
+  }
+
+  /* Navbar markasının resimli arka planı için stiller */
+  .navbar-brand {
+    color: white !important;
+    /* Metin rengini beyaz yapar */
+    display: flex;
+    align-items: center;
+  }
+
+  /* Navbar markasının arka plan resmi için stiller */
+  .navbar-brand-image {
+    background-image: url('static/blog/img/stable-diffusion-xl.jpg');
+    /* Resminizin yolunu belirtin */
+    background-size: cover;
+    /* Resmi kaplaması için */
+    width: 70px;
+    /* Resmin genişliği (ihtiyaca göre ayarlayın) */
+    height: 70px;
+    /* Resmin yüksekliği (ihtiyaca göre ayarlayın) */
+    margin-right: 10px;
+    /* Resim ile metin arasındaki boşluk (ihtiyaca göre ayarlayın) */
+    border-radius: 50%;
+    /* Resmi yuvarlak yapar (isteğe bağlı) */
+  }
+
+  /* Navbar metni için stiller */
+  .navbar-brand-text {
+    color: white !important;
+    /* Metin rengini beyaz yapar */
+    font-size: 18px;
+    /* Metin boyutu (ihtiyaca göre ayarlayın) */
+    font-weight: bold;
+    /* Metin kalınlığı (isteğe bağlı) */
+    text-decoration: none;
+    /* Metin altı çizgiyi kaldırır (isteğe bağlı) */
+  }
+
+  /* Navbar metni için stiller (hover durumu) */
+  .navbar-brand-text:hover {
+    color: #ff5733 !important;
+    /* Hover durumunda metin rengini değiştirir (isteğe bağlı) */
+  }
+
+  /* Navbar içindeki diğer metinlerin rengini beyaz yapar */
+  .navbar-nav .nav-link {
+    color: white !important;
+  }
+
+  /* Dropdown menüyü stillemek için ul öğesine stiller ekleyin */
+#motorcycle_navbar {
+    list-style: none; /* Liste işaretlerini kaldırın */
+    padding: 0; /* Kenar boşluğunu kaldırın */
+    margin: 0; /* Kenar boşluğunu kaldırın */
+}
+
+/* Dropdown menü öğelerini stillemek için li öğelerine stiller ekleyin */
+#motorcycle_navbar li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Dropdown öğelerinin arka planını ve yazı rengini belirleyin */
+#motorcycle_navbar li a {
+    display: block; /* Öğeleri blok olarak görüntülemek için */
+    padding: 10px 15px; /* Yatay ve dikey dolgu ekleyin */
+    text-decoration: none; /* Altçizgi ekleyin */
+    color: #333; /* Yazı rengi */
+    background-color: #fff; /* Varsayılan arka plan rengi */
+    transition: background-color 0.3s ease; /* Arka plan rengi geçiş efekti */
+}
+
+/* Öğelere mouse ile gelindiğinde hover efekti ekleyin */
+#motorcycle_navbar li a:hover {
+    background-color: #f2f2f2; /* Hover rengi */
+}
+
+/* Dropdown menü öğelerini yatay düzeyde hizalayın */
+#motorcycle_navbar li {
+    display: inline-block;
+}
+
+/* Dropdown menü öğeleri arasında boşluk ekleyin */
+#motorcycle_navbar li + li {
+    margin-left: 10px; /* İstenilen boşluk miktarı */
+}
+
+
+</style>
+
+
+
+
+
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: '{% url "get_data_base_category" %}',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        $.each(data, function (index, categori) {
+          var base_category_names = categori.base_category_names;
+          var id = categori.id;
+          var CategoriHTML = '<li><a class="dropdown-item" href="/videos?category_id=' + id + '">' + base_category_names + '</a></li>';
+          $("#motorcycle_navbar").append(CategoriHTML);
+        });
+      },
+      error: function () {
+        $('#headername').text('Veri alınamadı.');
+      }
+    });
+  });
+
+
+
+
+  {% comment %} $("#motorsikletindex").click(function () {
+    var categoryId = 1;  // Tıklanan kategoriye göre bu değeri ayarlayın
+    var url = '{% url "videos" %}?category_id=' + categoryId;
+    window.location.href = url;
+  });
+  $("#arabaindex").click(function () {
+    var categoryId = 2;  // Tıklanan kategoriye göre bu değeri ayarlayın
+    var url = '{% url "videos" %}?category_id=' + categoryId;
+    window.location.href = url;
+  });
+  $("#scooter").click(function () {
+    var categoryId = 3;  // Tıklanan kategoriye göre bu değeri ayarlayın
+    var url = '{% url "videos" %}?category_id=' + categoryId;
+    window.location.href = url;
+  });
+  $("#bisiklet").click(function () {
+    var categoryId = 4;  // Tıklanan kategoriye göre bu değeri ayarlayın
+    var url = '{% url "videos" %}?category_id=' + categoryId;
+    window.location.href = url;
+  }); {% endcomment %}
+
+</script>

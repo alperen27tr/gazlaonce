@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css_files %} {% endblock %}
+    <title> {% block title %} {% endblock %} | GazlamadanÖnce</title>
+    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/index.css' %}">
+    <style>
+      .page-footer {
+        background-color: black;
+        color: white;
+        padding: 0px;
+        font-size: 14px; 
+        white-space: nowrap;
+    }
+
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'blog/js/jquery.js' %}"></script>
+    <script src="{% static 'blog/js/script.js' %}"></script>
+    <script src="{% static 'blog/js/base.js' %}"></script>
+
+  
+    
+
+</head>
+
+<body> 
+  {% include 'partials/_navbar.html' %}
+
+
+  
+  {% block content %}
+
+  {% endblock %}
+
+
+  
+
+  {% block js_files %}
+  
+  {% endblock %}
+
+</body>
+
+{% block footer %}
+<footer class="page-footer font-small blue">
+
+     
+    <div class="footer-copyright text-center py-3">© 2023 Copyright:
+      <p style="display: inline;">Alperen Erdoğan</p>
+    </div> 
+    
+  
+</footer>
+{% endblock %}
+
+</html>
