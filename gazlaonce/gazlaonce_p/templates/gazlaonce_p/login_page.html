@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Login/SignUp
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4"> 
+  <h3>Giriş Yap/Üye Ol</h3>
+  <div class="text-center">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="Login" data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+          role="tab" aria-controls="nav-home" aria-selected="true" onclick="">Giriş Yap</button>
+        <button class="nav-link" id="SignUp" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab"
+          aria-controls="nav-profile" aria-selected="false" onclick="">Üye Ol</button>
+      </div>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="Login">
+          <div id="loginForm">
+            <input class="form-control" id="UserNameInput" type="text" placeholder="Kullanıcı Adı..."
+              aria-label="default input example">
+            <input class="form-control" id="PasswordInput" type="password" placeholder="Şifre..."
+              aria-label="default input example">
+            <button id="loginbutton" type="button" class="btn btn-dark"
+              style="margin-left: 20px; margin-right: 20px;">Giriş Yap</button>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="SignUp">
+          <div id="signUpForm">
+            <input class="form-control" id="NewNameInput" type="text" placeholder="İsim..."
+              aria-label="default input example">
+            <input class="form-control" id="NewUserSurnameInput" type="text" placeholder="Soyisim..."
+              aria-label="default input example">
+            <input class="form-control" id="NewUserMailInput" type="text" placeholder="E-mail..."
+              aria-label="default input example">
+            <input class="form-control" id="NewUserNameInput" type="text" placeholder="Kullanıcı Adı..."
+              aria-label="default input example">
+            <input class="form-control" id="NewPasswordInput" type="password" placeholder="Şifre..."
+              aria-label="default input example">
+            <button id="SignUpButton" type="button" class="btn btn-dark"
+              style="margin-left: 20px; margin-right: 20px;">Üye Ol</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<style>
+#SignUp {
+    background-color: black; 
+    color: white;
+}
+#Login {
+    background-color: black; 
+    color: white; 
+}
+</style>
+
+<script>
+
+  //yeni kullanıcı kayıt
+  $(document).ready(function () {
+  $('#SignUpButton').click(function () {
+    var NewName = $('#NewNameInput').val();
+    var NewSurname = $('#NewUserSurnameInput').val();
+    var NewUserName = $('#NewUserNameInput').val();
+    var NewPassword = $('#NewPasswordInput').val();
+    var NewMail = $('#NewUserMailInput').val();
+
+    // Tüm alanlar dolduruldu mu kontrol et
+    if (
+      NewName === "" ||
+      NewSurname === "" ||
+      NewUserName === "" ||
+      NewPassword === "" ||
+      NewMail === ""
+    ) {
+      alert("Lütfen Formu Eksiksiz Doldurunuz.");
+      return; 
+    }
+
+    //tüm alanlar doldurulunca ajax isteği gönder
+    $.ajax({
+      type: 'POST',
+      url: '{% url "new_user_record" %}',
+      data: {
+        'first_name': NewName,
+        'last_name': NewSurname,
+        'username': NewUserName,
+        'password': NewPassword,
+        'email': NewMail,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function (response) {
+        alert("Kayıt Başarılı!");
+        location.reload();
+      },
+      error: function (response) {
+        alert("Kullanıcı kaydedilirken bir hata oluştu.");
+      }
+    });
+  });
+});
+
+  //giriş Yap
+  $(document).ready(function () {
+    $('#loginbutton').click(function () {
+        var username = $('#UserNameInput').val();
+        var password = $('#PasswordInput').val();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "login_view" %}',
+            data: {
+                'username': username,
+                'password': password,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                if(response.status == "1"){;
+                  alert(response.message);
+                }
+                else
+                {
+                  alert(response.message);
+                  window.location.href = '/index';
+                }
+            },
+            error: function (response) {
+                alert(response.status);
+                alert("Kullanıcı adı veya şifre hatalı.");
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}

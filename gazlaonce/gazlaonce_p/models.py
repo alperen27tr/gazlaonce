@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
                     
 class base_category(models.Model):
     base_category_names=models.CharField(max_length=200,null = True)
@@ -32,5 +34,3 @@ class base_videos(models.Model):
     def __str__(self):
         return self.title
     
-   
-

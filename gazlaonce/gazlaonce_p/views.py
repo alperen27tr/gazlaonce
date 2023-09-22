@@ -1,8 +1,13 @@
 from django.core import serializers
 from django.http import JsonResponse
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,redirect
 from .models import categories,base_videos,base_category
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth.decorators import login_required
+
+
 
 def index(request):
     return render(request, "gazlaonce_p/index.html")
@@ -11,8 +16,8 @@ def videos(request):
     return render(request,"gazlaonce_p/videos.html")
 
 
-def video_change(request):
-    return render(request, "gazlaonce_p/video_change.html")
+def login_page(request):
+    return render(request, "gazlaonce_p/login_page.html")
 
 
 def get_data(request):
@@ -99,3 +104,44 @@ def get_data_index_videos(request):
         })
     return JsonResponse(video_data, safe=False)
 
+def new_user_record(request):
+    if request.method == 'POST':
+        newusername = request.POST.get('username')
+        newpassword = request.POST.get('password')
+        newemail=request.POST.get('email')
+        newname=request.POST.get('first_name')
+        newsurname=request.POST.get('last_name')
+
+        user = User.objects.create(username=newusername, email=newemail)
+
+        user.set_password(newpassword)
+        user.save()
+        return JsonResponse({'message': 'Kullanıcı başarıyla kaydedildi.'})
+    else:
+        return JsonResponse({'message': 'Sadece POST istekleri kabul edilir.'})
+
+def login_view(request):
+     if request.method == 'POST':
+         username = request.POST['username']
+         password = request.POST['password']
+         print(username,password)
+         user = authenticate(request, username=username, password=password)
+         print(user)
+         if user is not None:
+             login(request, user)
+             return JsonResponse({'message': 'Giriş Başarılı...', 'status': '0'})
+         else:
+             return JsonResponse({'message': 'Kullanıcı Adı Veya Şifre Yanlış', 'status': '1'})
+
+@login_required
+def get_user_username_in_navbar(request):
+    user_name = request.user.username
+    return JsonResponse({'username': user_name})
+
+def user_logout(request):
+    logout(request)
+    return JsonResponse({'message': 'Çıkış yapıldı'})
+
+def admin_dashboard(request):
+    superusers = User.objects.filter(is_superuser=1)
+    return render(request, 'admin_dashboard.html', {'superusers': superusers})

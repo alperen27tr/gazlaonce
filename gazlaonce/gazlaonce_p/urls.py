@@ -11,7 +11,7 @@ urlpatterns= [
     path("",views.index,name="home"),
     path("index",views.index),
     path("videos",views.videos,name="videos"),
-    path("video_change",views.video_change,name="video_change"),
+    path("video_change",base_videos_views.video_change,name="video_change"),
     path('create-post/', views.create_post, name='create_post'),
     path('update_video_category', views.update_video_category, name='update_video_category'),
 
@@ -43,6 +43,19 @@ urlpatterns= [
     path("delete_subcategory/",sub_category_views.delete_subcategory,name="delete_subcategory"),
     path('update_sub_category_activity/', sub_category_views.update_sub_category_activity, name='update_sub_category_activity'),
     path('get_data_subcategories_list', sub_category_views.get_data_subcategories_list, name='get_data_subcategories_list'),
+    path('is_superuser/', sub_category_views.is_superuser, name='is_superuser'),
+
+
+    #login page views
+    path('login_page', views.login_page, name='login_page'),
+    path('new_user_record', views.new_user_record, name='new_user_record'),
+    path('login_view', views.login_view, name='login_view'),
+    path('get_user_username_in_navbar', views.get_user_username_in_navbar, name='get_user_username_in_navbar'),
+    path('user_logout/', views.user_logout, name='user_logout'),
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+
+    
+    
     
 ]
 

@@ -3,7 +3,13 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from .models import base_category
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, user_passes_test
 
+
+def is_superuser(user):
+    return user.is_authenticated and user.is_superuser == 1
+
+@user_passes_test(is_superuser)
 def base_category_change(request):
     return render(request, "gazlaonce_p/base_category_change.html")
 

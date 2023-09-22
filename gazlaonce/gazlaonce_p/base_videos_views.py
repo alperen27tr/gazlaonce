@@ -3,7 +3,12 @@ from django.http import JsonResponse
 from django.shortcuts import render,get_object_or_404
 from .models import categories,base_videos,base_category
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, permission_required
 
+
+@login_required
+def video_change(request):
+    return render(request, "gazlaonce_p/video_change.html")
 
 def videoUpdateGet(request):
     videoId = request.GET.get('videoId')
@@ -36,11 +41,8 @@ def create_post_video(request):
 
 def get_data_changevideos(request):
     data = base_videos.objects.all()  
-     
-        
     for changevideos in data:        
         print(changevideos.is_active)
-        
     data_list =[{'id':changevideos.id, 'title': changevideos.title,'link':changevideos.link,'base_categories_id':changevideos.base_categories.id,'base_categories_names':changevideos.base_categories.base_category_names,'is_active':changevideos.is_active,'categories_id':changevideos.categories.id,'categories_name':changevideos.categories.categoriesName}
                  for changevideos in data]
     
@@ -71,7 +73,7 @@ def update_video_admin(request):
     
 
 def video_gallery_index(request):
-    data = base_videos.objects.order_by('?')[:20]
+    data = base_videos.objects.filter(is_active = 1).order_by('?')[:20]
     data_list = []
     for item in data:
         data_list.append({
@@ -102,6 +104,7 @@ def get_motocycle_videos(request):
     video_list = list(videos)
     return JsonResponse({'videos': video_list})
 
+
 def get_data_opened_video_page_videos(request):
     basecategory_id = request.GET.get('basecategory_id')
     videos_data = base_videos.objects.filter(base_categories=str(basecategory_id)).order_by('?')[:20]
@@ -114,6 +117,8 @@ def get_data_opened_video_page_videos(request):
             'is_active': video.is_active, 
         })
     return JsonResponse(data, safe=False)
+
+
 
 
 

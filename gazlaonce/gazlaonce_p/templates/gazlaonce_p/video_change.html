@@ -36,8 +36,6 @@ Admin
     
 </div>
 
-
-
 <div class="container">
     <h2>Video Listesi</h2>
     <table class="table table-striped">
@@ -136,9 +134,8 @@ Admin
                 $('tbody').empty();    
 
                 data.forEach(function (data_list) {
-                    debugger;
                     var checkboxId = "myCheckboxId" + data_list.id;
-                    var checkbox = data_list.is_active == true ?
+                    var checkbox = data_list.is_active == 1 ?
                     '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '" checked>' :
                     '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '">';
         

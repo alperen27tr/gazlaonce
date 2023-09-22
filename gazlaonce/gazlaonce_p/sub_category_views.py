@@ -3,8 +3,12 @@ from django.http import JsonResponse
 from django.shortcuts import render,get_object_or_404
 from .models import categories,base_videos,base_category
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, permission_required,user_passes_test
 
+def is_superuser(user):
+    return user.is_authenticated and user.is_superuser == 1
 
+@user_passes_test(is_superuser)
 def subcategory_change(request):
     return render(request, "gazlaonce_p/subcategory_change.html")
 
@@ -36,7 +40,7 @@ def delete_subcategory(request):
         categories.objects.filter(id=category_id).delete()
         return JsonResponse({"message": "Category deleted successfully."})
     
-    
+ 
 def update_sub_category_activity(request):
     if request.method == "POST":
         category_id = request.POST.get("category_id")
@@ -53,7 +57,6 @@ def update_sub_category_activity(request):
         return JsonResponse({"message": "Geçersiz istek."})
     
 
-# altkategori düzenlemedeki base category
 def get_data_subcategories_list(request):
     base_category_list = base_category.objects.filter(is_active="True").values('id', 'base_category_names','is_active') 
     data = []

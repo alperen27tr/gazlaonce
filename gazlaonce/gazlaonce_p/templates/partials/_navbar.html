@@ -19,9 +19,10 @@
             Video Kategorileri
           </a>
           <ul id='motorcycle_navbar' class="dropdown-menu">
-           
+
           </ul>
         </li>
+        {% if request.user.is_superuser %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="admin1" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">Admin</a>
@@ -34,18 +35,40 @@
             </li>
           </ul>
         </li>
+        {% endif %}
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Giriş Yap</a>
+          <a class="nav-link active" aria-current="page" id="girisyap" href="{% url 'login_page' %}">Giriş Yap</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Kayıt Ol</a>
+        <li class="nav-item" id="kullanici-info" {% if user.is_authenticated %}style="display: block;"{% endif %}>
+          <a id="kullanici-adi" class="nav-link active" href="{% url 'home' %}" aria-current="page">
+            {% if user.is_authenticated %}Hoş Geldiniz, {{ user.username }}{% endif %}
+          </a>
         </li>
+        
+        {% if user.is_authenticated %}
+        <li class="nav-item" id="cikis_yap">
+          <a class="nav-link active" aria-current="page" href="{% url 'user_logout' %}">Çıkış Yap</a>
+        </li>
+        {% endif %}
+
+
+
       </ul>
     </div>
   </div>
 </nav>
+
+<script>
+  // Kullanıcının giriş yapmış olup olmadığı kontrol edilir  
+  //var userIsAuthenticated = true; // Kullanıcı giriş yapmışsa true 
+
+  // Kullanıcı girişi yapılmışsa çıkış yap butonunu görünür yap
+  // if (userIsAuthenticated) {
+  //   document.getElementById("cikis_yap").style.display = "block"; 
+  // }
+</script>
 
 
 <style>
@@ -110,49 +133,54 @@
   }
 
   /* Dropdown menüyü stillemek için ul öğesine stiller ekleyin */
-#motorcycle_navbar {
-    list-style: none; /* Liste işaretlerini kaldırın */
-    padding: 0; /* Kenar boşluğunu kaldırın */
-    margin: 0; /* Kenar boşluğunu kaldırın */
-}
+  #motorcycle_navbar {
+    list-style: none;
+    /* Liste işaretlerini kaldırın */
+    padding: 0;
+    /* Kenar boşluğunu kaldırın */
+    margin: 0;
+    /* Kenar boşluğunu kaldırın */
+  }
 
-/* Dropdown menü öğelerini stillemek için li öğelerine stiller ekleyin */
-#motorcycle_navbar li {
+  /* Dropdown menü öğelerini stillemek için li öğelerine stiller ekleyin */
+  #motorcycle_navbar li {
     margin: 0;
     padding: 0;
-}
+  }
 
-/* Dropdown öğelerinin arka planını ve yazı rengini belirleyin */
-#motorcycle_navbar li a {
-    display: block; /* Öğeleri blok olarak görüntülemek için */
-    padding: 10px 15px; /* Yatay ve dikey dolgu ekleyin */
-    text-decoration: none; /* Altçizgi ekleyin */
-    color: #333; /* Yazı rengi */
-    background-color: #fff; /* Varsayılan arka plan rengi */
-    transition: background-color 0.3s ease; /* Arka plan rengi geçiş efekti */
-}
+  /* Dropdown öğelerinin arka planını ve yazı rengini belirleyin */
+  #motorcycle_navbar li a {
+    display: block;
+    /* Öğeleri blok olarak görüntülemek için */
+    padding: 10px 15px;
+    /* Yatay ve dikey dolgu ekleyin */
+    text-decoration: none;
+    /* Altçizgi ekleyin */
+    color: #333;
+    /* Yazı rengi */
+    background-color: #fff;
+    /* Varsayılan arka plan rengi */
+    transition: background-color 0.3s ease;
+    /* Arka plan rengi geçiş efekti */
+  }
 
-/* Öğelere mouse ile gelindiğinde hover efekti ekleyin */
-#motorcycle_navbar li a:hover {
-    background-color: #f2f2f2; /* Hover rengi */
-}
+  /* Öğelere mouse ile gelindiğinde hover efekti ekleyin */
+  #motorcycle_navbar li a:hover {
+    background-color: #f2f2f2;
+    /* Hover rengi */
+  }
 
-/* Dropdown menü öğelerini yatay düzeyde hizalayın */
-#motorcycle_navbar li {
+  /* Dropdown menü öğelerini yatay düzeyde hizalayın */
+  #motorcycle_navbar li {
     display: inline-block;
-}
+  }
 
-/* Dropdown menü öğeleri arasında boşluk ekleyin */
-#motorcycle_navbar li + li {
-    margin-left: 10px; /* İstenilen boşluk miktarı */
-}
-
-
+  /* Dropdown menü öğeleri arasında boşluk ekleyin */
+  #motorcycle_navbar li+li {
+    margin-left: 10px;
+    /* İstenilen boşluk miktarı */
+  }
 </style>
-
-
-
-
 
 <script>
   $(document).ready(function () {
@@ -174,28 +202,44 @@
     });
   });
 
+  $.ajax({
+    url: "{% url 'get_user_username_in_navbar' %}",
+    type: "GET",
+    dataType: "json",
+    success: function (data) {
+      var username = data.username;
+      if (username) {
+        // Kullanıcı giriş yapmış, Navbar'ı güncelle
+        $("#girisyap").hide(); // Giriş yap butonunu gizle
+        $("#kullanici-adi").text(username); // Kullanıcı adını ayarla
+        $("#kullanici-info").show(); // Kullanıcı bilgisini göster
+      } else {
+        // Kullanıcı giriş yapmamış, Navbar'ı varsayılana sıfırla
+        $("#girisyap").show(); // Giriş yap butonunu göster
+        $("#kullanici-info").hide(); // Kullanıcı bilgisini gizle
+      }
+    },
+    error: function (error) {
+      console.error('Hata:', error);
+    }
+  });
+
+  $("#cikis_yap").click(function () {
+    $.ajax({
+      url: "/user_logout/",
+      type: "GET",
+      success: function (data) {
+        alert("Çıkış Yapıldı")
+        window.location.reload(); 
+      },
+      error: function (error) {
+        console.error('Hata:', error);
+      }
+    });
+  });
 
 
 
-  {% comment %} $("#motorsikletindex").click(function () {
-    var categoryId = 1;  // Tıklanan kategoriye göre bu değeri ayarlayın
-    var url = '{% url "videos" %}?category_id=' + categoryId;
-    window.location.href = url;
-  });
-  $("#arabaindex").click(function () {
-    var categoryId = 2;  // Tıklanan kategoriye göre bu değeri ayarlayın
-    var url = '{% url "videos" %}?category_id=' + categoryId;
-    window.location.href = url;
-  });
-  $("#scooter").click(function () {
-    var categoryId = 3;  // Tıklanan kategoriye göre bu değeri ayarlayın
-    var url = '{% url "videos" %}?category_id=' + categoryId;
-    window.location.href = url;
-  });
-  $("#bisiklet").click(function () {
-    var categoryId = 4;  // Tıklanan kategoriye göre bu değeri ayarlayın
-    var url = '{% url "videos" %}?category_id=' + categoryId;
-    window.location.href = url;
-  }); {% endcomment %}
+
 
 </script>
