@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}Admin{% endblock %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <div style="text-align: center; margin-top: 10vh; transform: translateY(-50%);">
+        <div class="form-group">
+            <h3>Ana Kategori Ekleme/Güncelleme İşlemleri</h3>
+            <h4 style="display:none" id="categoryID">id: </h4>
+
+            <label for="formGroupExampleInput"> </label>
+            <div style="display: inline-block; text-align: left;">
+                <input type="text" class="form-control" id="anakategoriinput" placeholder="Eklenecek ana kategoriyi girin..." style="width: 280px;">
+                <button id="kaydetbtn" type="button" class="btn btn-dark" style="margin-left: 20px; margin-right: 20px;">Kaydet</button>
+                <button id="update_category" type="button" class="btn btn-dark" style="margin-left: 20px; margin-right: 20px;">Güncelle</button>
+            </div>
+        </div>
+    </div>
+</head>
+<body>
+    
+    
+
+    <div class="container">
+        <h2>Ana Kategori Listesi</h2>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Aktiflik<hr></th>
+              
+              <th>Ana Kategori<hr></th>
+              <th>Güncelle<hr></th>
+              <th>Sil<hr></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+    </div>
+
+    <script>
+
+        //Kategori Listesi ve İşlemler >
+        $.ajax({
+            url: 'get_categories/',  
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (item) {
+                    var checkboxId = "myCheckboxId" + item.id;
+                    var checkbox = item.is_active === "True" ?
+                        '<input class="form-check-input" onclick="ActiveBaseCategory(this)" type="checkbox" id="' + checkboxId + '" checked>' :
+                        '<input class="form-check-input" onclick="ActiveBaseCategory(this)" type="checkbox" id="' + checkboxId + '">';
+            
+                    var listItem = "<li>" +
+                        "<div class='form-check form-switch'>" + checkbox +
+                        "</div>" +
+                        "</li>";
+            
+                    $('tbody').append('<tr>' +
+                        '<td>' + listItem + '</td>' +    
+                        '<td>' + item.categoriesName + '</td>' + 
+                        '<td><button onclick="updateCategory(' + item.id + ', \'' + item.categoriesName + '\')" type="button" class="btn btn-dark btn-sm">Güncelle</button></td>' + 
+                        '<td><button onclick="deleteCategory(' + item.id + ', \'' + item.categoriesName + '\')" type="button" class="btn btn-dark btn-sm">Sil</button></td>' + 
+                        '</tr>');
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        
+
+        //  aktif-pasif işlemleri
+        function ActiveBaseCategory(checkbox) {
+            var checkboxId = $(checkbox).attr('id');
+            var numericId = checkboxId.replace('myCheckboxId', '');
+            if ($(checkbox).is(':checked')) {
+                var active = "True";
+            } else {
+                var active = "False";
+            }
+            ActiveBaseCategoryDB(numericId, active);
+
+        }
+
+        function ActiveBaseCategoryDB(numericId, active)        {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'update_base_category_activity' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    category_id: numericId,
+                    active: active
+                },
+                success: function () {
+                    alert("Kategori Güncellendi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Kategori Güncellenirken Bir Hata Oluştu.");
+                }
+            });
+        }
+
+        //ana kategori oluştururken
+        $('#kaydetbtn').click(function () {
+            var baseCategory = $('#anakategoriinput').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "create_post" %}',
+                data: {
+                    'title': baseCategory,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert("Ana kategori başarıyla kaydedildi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Ana kategori kaydedilirken bir hata oluştu.");
+                }
+            });
+        });
+
+        //Ana kategori silme işlemi
+        function deleteCategory(categoryId) {
+            if (categoryId > 4) {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'delete_category' %}",
+                    data: {
+                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                        category_id: categoryId
+                    },
+                    success: function () {
+                        alert("Ana kategori silindi!");
+                        location.reload();
+                    },
+                    error: function (response) {
+                        alert("Ana kategori silinirken bir hata oluştu.");
+                    }
+                });
+            }
+            else {
+                alert("Ana Kategori Silinemez! (Default Category)");
+            }
+
+        };
+
+        //kategori güncelleme
+        function updateCategory(categoryId, catagoryName) {
+            console.log("Güncelle butonuna tıklanıldı. Kategori ID:", categoryId);
+            var idHeader = document.getElementById('categoryID');
+            $('#anakategoriinput').val(catagoryName);
+            idHeader.textContent = "id: " + categoryId;
+        }
+
+
+        $("#update_category").on("click", function () {
+            var categoryId = $("#categoryID").text().replace("id: ", "");
+            var categoryName = $('#anakategoriinput').val();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'update_category' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    category_id: categoryId,
+                    category_name: categoryName
+                },
+                success: function () {
+                    alert("Kategori adı güncellendi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Kategori adı güncellenirken bir hata oluştu.");
+                }
+            });
+        });
+
+
+        // Kategori güncelleme düğmelerine tıklanınca
+        $(".update-category").on("click", function () {
+
+            var categoryId = $(this).data("category-id");
+            var categoryName = $(this).data("category-name");
+            var checkboxId = "myCheckboxId" + categoryId;
+            var isCheckboxChecked = $("#" + checkboxId).is(":checked");
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'update_category' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    category_id: categoryId,
+                    category_name: categoryName,
+                    is_active: isCheckboxChecked
+                },
+                success: function () {
+                    alert("Kategori güncellendi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Kategori güncellenirken bir hata oluştu.");
+                }
+            });
+        });
+
+
+
+    </script>
+
+</body>
+
+{% endblock %}

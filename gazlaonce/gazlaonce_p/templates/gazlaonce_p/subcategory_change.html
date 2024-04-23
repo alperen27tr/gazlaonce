@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Admin
+{% endblock %}
+
+{% block content %}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub Categories</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sub Categories</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+    </head>
+    
+</head>
+
+<body>
+
+    <div class="text-center">
+        <div class="form-group">
+            <h3>Alt Kategori Ekleme/Güncelleme İşlemleri</h3>
+            <h4 style="display:none" id="categoryID">id: </h4>                                            
+            <select class="js-example-basic-single" name="state">
+            </select>
+    
+            <div class="d-flex justify-content-center"> 
+                <label for="formGroupExampleInput"> </label>
+                <input type="text" class="form-control" id="altkategoriinput" placeholder="Eklenecek alt kategoriyi girin..." style="width: 280px;">
+            </div>
+    
+            <button id="kaydetbtn" type="button" class="btn btn-dark" style="margin-left: 20px; margin-right: 20px;">Kaydet</button>
+            <button id="update_category" type="button" class="btn btn-dark" style="margin-left: 20px; margin-right: 20px;">Güncelle</button>
+        </div>
+    </div>
+    
+    
+
+    
+    <div class="container">
+        <h2>Alt Kategori Listesi</h2>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Aktiflik<hr></th>
+              <th>Alt Kategori<hr></th>
+              <th>Ana Kategori<hr></th>
+              <th>Güncelle<hr></th>
+              <th>Sil<hr></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+    </div>
+
+</body>
+  
+
+<script>
+
+     //Kategori Listesi ve İşlemler 
+     $.ajax({
+        url: 'get_subcategories',  
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            data.forEach(function (item) {
+                var checkboxId = "myCheckboxId" + item.id;
+                var checkbox = item.is_active === "True" ?
+                    '<input class="form-check-input" onclick="ActiveSubCategory(this)" type="checkbox" id="' + checkboxId + '" checked>' :
+                    '<input class="form-check-input" onclick="ActiveSubCategory(this)" type="checkbox" id="' + checkboxId + '">';
+        
+                var listItem = "<li>" +
+                    "<div class='form-check form-switch'>" + checkbox +
+                    "</div>" +
+                    "</li>";
+        
+                $('tbody').append('<tr>' +
+                    '<td>' + listItem + '</td>' +    
+                    '<td>' + item.categoriesName + '</td>' + 
+                    '<td>' + item.base_categories_name + '</td>' +                     
+                    '<td><button onclick="updateCategory(' + item.id + ', \'' + item.base_categories_id + '\')" type="button" class="btn btn-dark btn-sm">Güncelle</button></td>' + 
+                    '<td><button onclick="deleteCategory(' + item.id + ', \'' + item.base_categories_id + '\')" type="button" class="btn btn-dark btn-sm">Sil</button></td>' + 
+                    '</tr>');
+            });
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+
+    
+    $(document).ready(function () {
+        $.ajax({
+            url: 'get_data_subcategories_list',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var select = $('select[name="state"]');
+                $.each(data, function (index, data) {
+                    select.append('<option value="' + data.id + '">' + data.base_category_names + '</option>');
+                });
+            },
+            error: function () {
+                alert('Veriler alınamadı.');
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#kaydetbtn').click(function () {
+            var anaKategori = $('#altkategoriinput').val();
+            var base_categories_id = $('select[name="state"]').val();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "create_post_subcategory" %}',
+                data: {
+                    'title': anaKategori,
+                    'base_categories_id':base_categories_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert("Alt kategori başarıyla kaydedildi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Alt kategori kaydedilirken bir hata oluştu.");
+                }
+            });
+        });
+    });
+
+    //videoları aktif/pasif yapma
+    function ActiveSubCategory(checkbox) {
+        var checkboxId = $(checkbox).attr('id');
+        var numericId = checkboxId.replace('myCheckboxId', '');
+        if ($(checkbox).is(':checked')) {
+            var active = "True";
+        } else {
+            var active = "False";
+        }
+        ActiveSubCategoryDB(numericId, active);
+    }
+    
+    function ActiveSubCategoryDB(numericId, active) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'update_sub_category_activity' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                category_id: numericId,
+                active: active
+            },
+            success: function () {
+                alert("Kategori Güncellendi!");
+                location.reload();
+            },
+            error: function (response) {
+                debugger;
+                alert("Kategori Güncellenirken Bir Hata Oluştu.");
+            }
+        });
+    }
+
+    function deleteCategory(categoryId) {
+        if (categoryId > 15) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'delete_subcategory' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    category_id: categoryId
+                },
+                success: function () {
+                    alert("Alt kategori silindi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Alt kategori silinirken bir hata oluştu.");
+                }
+            });
+        }
+        else {
+            alert("Alt Kategori Silinemez!");
+        }
+
+    };
+
+    function updateCategory(categoryId, catagoryName,base_categories_id) {
+        console.log("Güncelle butonuna tıklanıldı. Kategori ID:", categoryId);
+        var idHeader = document.getElementById('categoryID');
+        $('#altkategoriinput').val(catagoryName);
+        idHeader.textContent = "id: " + categoryId;
+        $('select[name="state"]').val(base_categories_id);
+    }
+
+    $(document).ready(function () {
+        $("#update_category").on("click", function () {
+            var categoryId = $("#categoryID").text().replace("id: ", "");
+            var categoryName = $('#altkategoriinput').val();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'update_category' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    category_id: categoryId,
+                    category_name: categoryName
+                },
+                success: function () {
+                    alert("Kategori adı güncellendi!");
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Kategori adı güncellenirken bir hata oluştu.");
+                }
+            });
+        });
+    });
+</script>
+
+
+  
+
+{% endblock %}

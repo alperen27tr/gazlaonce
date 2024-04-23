@@ -1,0 +1,106 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}"><div class="navbar-brand-image" style="background-image: url('static/blog/img/stable-diffusion-xl.jpg');"></div>GazlamadanÖnce</a>
+    <button class="navbar-toggler fixed-top bg-body-tertiary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Ana Sayfa</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Video Kategorileri</a>
+          <ul id="motorcycle_navbar" class="dropdown-menu"></ul>
+        </li>
+        {% if request.user.is_superuser %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="admin1" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+            <ul id="admin1_navbar" class="dropdown-menu">
+              <li>
+                <a id="videoduzenleme" class="dropdown-item" href="{% url 'base_category_change' %}">Ana Kategori Düzenleme</a>
+              </li>
+              <li>
+                <a id="anakategoriduzenleme" class="dropdown-item" href="{% url 'subcategory_change' %}">Alt Kategori Düzenleme</a>
+              </li>
+              <li>
+                <a id="altkategoriduzenleme" class="dropdown-item" href="{% url 'video_change' %}">Video Düzenleme</a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" id="girisyap" href="{% url 'login_page' %}">Giriş Yap</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" id="uyeol" href="{% url 'signup_page' %}">Üye Ol</a>
+        </li>
+       
+
+        {% if user.is_authenticated %}
+        <li class="nav-item" id="kullanici-info" style="display: block;">
+          <a id="kullanici-adi" class="nav-link active" href="{% url 'home' %}" aria-current="page"></a>
+        </li>
+          <li class="nav-item" id="cikis_yap">
+            <a class="nav-link active" aria-current="page" href="{% url 'user_logout' %}">Çıkış Yap</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: '{% url "get_data_base_category" %}',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        $.each(data, function (index, categori) {
+          var base_category_names = categori.base_category_names
+          var id = categori.id
+          var CategoriHTML = '<li><a class="dropdown-item" href="/videos?category_id=' + id + '">' + base_category_names + '</a></li>'
+          $('#motorcycle_navbar').append(CategoriHTML)
+        })
+      },
+      error: function () {
+        $('#headername').text('Veri alınamadı.')
+      }
+    })
+    $.ajax({
+      url: "{% url 'get_user_username_in_navbar' %}",
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        var username = data.username
+        if (username) {
+          // Kullanıcı giriş yapmış, Navbar'ı güncelle
+          $('#girisyap').hide() // Giriş yap butonunu gizle
+          $('#uyeol').hide() // üye ol butonunu gizle
+          $('#kullanici-adi').text(username) // Kullanıcı adını ayarla
+        } else {
+          // Kullanıcı giriş yapmamış, Navbar'ı varsayılana sıfırla
+          $('#girisyap').show() // Giriş yap butonunu göster
+        }
+      },
+      error: function (error) {
+        console.error('Hata:', error)
+      }
+    })
+
+    $('#cikis_yap').click(function () {
+      $.ajax({
+        url: '/user_logout/',
+        type: 'GET',
+        success: function (data) {
+          alert('Çıkış Yapıldı')
+          window.location.reload()
+        },
+        error: function (error) {
+          console.error('Hata:', error)
+        }
+      })
+    })
+  })
+</script>

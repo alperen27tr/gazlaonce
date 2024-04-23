@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Admin
+{% endblock %}
+
+{% block content %}
+
+
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <h4 style="display:none" id="videoId">id: </h4>    
+    <h3>Video Ekleme/Güncelleme İşlemleri</h3>
+
+    <div style="display: flex; justify-content: center;">
+        <select class="js-example-basic-single" name="state1">
+            
+        </select>
+    </div>
+    
+    <div style="display: flex; justify-content: center;">
+        <select class="js-example-basic-single" name="state2">
+           
+        </select>
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <div class="form-group">
+            <label for="formGroupExampleInput"> </label>
+            <input type="text" class="form-control" id="VideoTitleInput" placeholder="Video başlığı girin..." style="width: 280px;">
+            <input type="text" class="form-control" id="VideoLinkInput" placeholder="Video link'i girin..." style="width: 280px;">
+            <button id="kaydetbtn" type="button" class="btn btn-dark" style="margin-left: 20px; margin-right: 20px;">Kaydet</button>
+            <button id="update_category" type="button" class="btn btn-dark"style="margin-left: 20px; margin-right: 20px;">Güncelle</button>
+        </div>
+    </div>
+    
+</div>
+
+<div class="container">
+    <h2>Video Listesi</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Aktiflik<hr></th>
+          <th>Başlık<hr></th>
+          <th>Ana Kategori<hr></th>
+          <th>Alt Kategori<hr></th>
+          <th>Link<hr></th>
+          <th>Güncelle<hr></th>
+          <th>Sil<hr></th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+</div>
+
+<script>
+
+    //ana kategori dropbox oluşturma
+    $.ajax({
+        url: '{% url "get_data_base_category1" %}',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            var select = $('select[name="state1"]');
+
+            $.each(data, function (index, item) {
+                select.append('<option value="' + item.id + '">' + item.base_category_names + '</option>');
+            });
+        },
+        error: function () {
+            alert('Veriler alınamadı.');
+        }
+    });
+
+     //alt kategori dropbox oluşturma
+    $('select[name="state1"]').on("change", function () {
+        var select2 = $('select[name="state2"]');
+        select2.empty();
+        var drpBaseCategoriId = $('select[name="state1"]').val();
+        $.ajax({
+            url: '{% url "get_data_subcategories" %}?basecategory_id=' + drpBaseCategoriId,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var select = $('select[name="state2"]');
+    
+                $.each(data, function (index, item) {
+                    select.append('<option value="' + item.id + '">' + item.categoriesName + '</option>');
+                });
+            },
+            error: function () {
+                alert('Veriler alınamadı.');
+            }
+        });
+    });
+    
+    
+
+    //Yeni video kaydetme
+    $('#kaydetbtn').click(function () {
+        //var videoId = $("#videoId").text().replace("id: ", "");
+        var videoName = $('#VideoTitleInput').val();
+        var videoLink = $('#VideoLinkInput').val();
+        var base_categories_id = $('select[name="state1"]').val();
+        var sub_categories_id = $('select[name="state2"]').val();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "create_post_video" %}',
+            data: {
+                'videoName': videoName,
+                'videoLink':videoLink,
+                'base_categories_id':base_categories_id,
+                'sub_categories_id':sub_categories_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                alert("Yeni Video Başarıyla Kaydedildi!");
+                location.reload();
+            },
+            error: function (response) {
+                alert("Yeni Video Kaydedilirken Bir Hata Oluştu!");
+            }
+        });
+    });
+    
+    //tabloya dbden veri getirme
+    $(document).ready(function () {
+        $.ajax({
+            url: 'get_data_changevideos/',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('tbody').empty();    
+
+                data.forEach(function (data_list) {
+                    var checkboxId = "myCheckboxId" + data_list.id;
+                    var checkbox = data_list.is_active == 1 ?
+                    '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '" checked>' :
+                    '<input class="form-check-input" onclick="ActiveVideos(this)" type="checkbox" id="' + checkboxId + '">';
+        
+                    var listItem = "<li>" +
+                        "<div class='form-check form-switch'>" + checkbox +
+                        "</div>" +
+                        "</li>";
+            
+                                        
+                    // Tabloya yeni satır ekle
+                    var row = '<tr>' +
+                        '<td><div class="form-check form-switch">' + checkbox + '</div></td>' +
+                        '<td>' + data_list.title + '</td>' +
+                        '<td>' + data_list.base_categories_names + '</td>' +
+                        '<td>' + data_list.categories_name + '</td>' +
+                        '<td>' + data_list.link + '</td>' +
+                        '<td><button onclick="updateVideo(' + data_list.id + ')" type="button" class="btn btn-dark btn-sm">Güncelle</button></td>' +
+                        '<td><button onclick="deleteCategory(' + data_list.id + ')" type="button" class="btn btn-dark btn-sm">Sil</button></td>' +
+                        '</tr>';
+                    $('tbody').append(row);
+                    
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    
+
+    //video silme işlemleri
+    function deleteCategory(categoryId) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete_base_videos_admin' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                category_id: categoryId
+            },
+            success: function () {
+                alert("Video silindi!");
+                location.reload();
+            },
+            error: function (response) {
+                alert("Video silinirken bir hata oluştu.");
+            }
+        });
+    }
+       
+    //Güncelleme Yapılacak
+    function updateVideo(videoId) {
+        var idHeader = document.getElementById('videoId');
+        idHeader.textContent = "id: " + videoId;
+        $.ajax({
+            url: '{% url "videoUpdateGet" %}?videoId=' + videoId,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (data_list) {
+                    $('#VideoTitleInput').val(data_list.title);
+                    $('#VideoLinkInput').val(data_list.link);
+                    $('select[name="state1"]').val(data_list.base_categories);
+                    var select2 = $('select[name="state2"]');
+                    select2.empty();
+                    var drpBaseCategoriId = data_list.base_categories;
+                    $.ajax({
+                        url: '{% url "get_data_subcategories" %}?basecategory_id=' + drpBaseCategoriId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            var select = $('select[name="state2"]');
+                        
+                            $.each(data, function (index, item) {
+                                select.append('<option value="' + item.id + '">' + item.categoriesName + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert('Veriler alınamadı.');
+                        }
+                    })
+                    //çalısmıyor                    
+                    $('select[name="state2"]').val(data_list.categories);
+                    var select2 = $('select[name="state2"]');
+                    var drpsubCategoriId = data_list.categories;    
+                    
+                    $.ajax({
+                        url: '{% url "update_videos_activity" %}?basecategory_id=' + drpsubCategoriId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            var select = $('select[name="state2"]');
+                        },
+                        error: function () {
+                            alert('Veriler alınamadı.');
+                        }
+                    })
+                })
+            },
+            error: function () {
+                alert('Veriler alınamadı.');
+            }
+        });   
+    }
+
+    $("#update_category").on("click", function () {
+        var videoId = $("#videoId").text().replace("id: ", "");
+        var videoName = $('#VideoTitleInput').val();
+        var videoLink = $('#VideoLinkInput').val();
+        var base_categories_id = $('select[name="state1"]').val();
+        var sub_categories_id = $('select[name="state2"]').val();
+        $.ajax({
+        type: "POST",
+        url: "{% url 'update_video_category' %}",
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            'video_id': videoId,
+            'videoName': videoName,
+            'videoLink': videoLink,
+            'base_categories_id':base_categories_id,
+            'sub_categories_id':sub_categories_id
+        },
+        success: function () {
+            alert("Video güncellendi!");
+            location.reload();
+        },
+        error: function (response) {
+            alert("Video güncellenirken bir hata oluştu.");
+        }
+    });
+});
+
+    //videoları aktif/pasif yapma  (ÇALIŞMIYOR!)
+    function ActiveVideos(checkbox) {
+        var checkboxId = $(checkbox).attr('id');
+        var numericId = checkboxId.replace('myCheckboxId', '');
+        if ($(checkbox).is(':checked')) {
+            var active = 1;
+        } else {
+            var active = 0;
+        }
+        ActiveVideosDB(numericId, active);
+    }
+    
+    function ActiveVideosDB(numericId, active) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'update_videos_activity' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                'video_id': numericId,
+                'active': active
+            },
+            success: function () {
+                //alert("Video Güncellendi!");
+                //location.reload();
+            },
+            error: function (response) {
+                alert("Video Güncellenirken Bir Hata Oluştu.");
+            }
+        });
+    }
+    
+
+
+</script>
+
+
+
+{% endblock %}

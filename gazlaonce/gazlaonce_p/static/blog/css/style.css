@@ -1,0 +1,173 @@
+.page-footer {
+  background-color: black;
+  color: white;
+  padding: 0px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Navbar'ın arka plan rengini siyah yapar */
+.navbar {
+  background-color: rgb(0, 0, 0) !important;
+}
+
+/* Navbar'ı gölgelendirme ile vurgula */
+.navbar {
+  box-shadow: 0 2px 2px rgb(181 181 181);
+  /* Gölgelendirme efekti */
+  transition: box-shadow 0.3s ease-in-out;
+  /* Gölgelendirme değişikliğini yumuşak bir şekilde geçiş yapar */
+}
+
+/* Navbar markasının resimli arka planı için stiller */
+.navbar-brand {
+  color: white !important;
+  /* Metin rengini beyaz yapar */
+  display: flex;
+  align-items: center;
+}
+
+/* Navbar markasının arka plan resmi için stiller */
+.navbar-brand-image {
+  background-image: url('static/blog/img/stable-diffusion-xl.jpg');
+  /* Resminizin yolunu belirtin */
+  background-size: cover;
+  /* Resmi kaplaması için */
+  width: 70px;
+  /* Resmin genişliği (ihtiyaca göre ayarlayın) */
+  height: 70px;
+  /* Resmin yüksekliği (ihtiyaca göre ayarlayın) */
+  margin-right: 10px;
+  /* Resim ile metin arasındaki boşluk (ihtiyaca göre ayarlayın) */
+  border-radius: 50%;
+  /* Resmi yuvarlak yapar (isteğe bağlı) */
+}
+
+/* Navbar metni için stiller */
+.navbar-brand-text {
+  color: white !important;
+  /* Metin rengini beyaz yapar */
+  font-size: 18px;
+  /* Metin boyutu (ihtiyaca göre ayarlayın) */
+  font-weight: bold;
+  /* Metin kalınlığı (isteğe bağlı) */
+  text-decoration: none;
+  /* Metin altı çizgiyi kaldırır (isteğe bağlı) */
+}
+
+/* Navbar metni için stiller (hover durumu) */
+.navbar-brand-text:hover {
+  color: #ff5733 !important;
+  /* Hover durumunda metin rengini değiştirir (isteğe bağlı) */
+}
+
+/* Navbar içindeki diğer metinlerin rengini beyaz yapar */
+.navbar-nav .nav-link {
+  color: white !important;
+}
+
+/* Dropdown menüyü stillemek için ul öğesine stiller ekleyin */
+#motorcycle_navbar {
+  list-style: none;
+  /* Liste işaretlerini kaldırın */
+  padding: 0;
+  /* Kenar boşluğunu kaldırın */
+  margin: 0;
+  /* Kenar boşluğunu kaldırın */
+}
+
+/* Dropdown menü öğelerini stillemek için li öğelerine stiller ekleyin */
+#motorcycle_navbar li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Dropdown öğelerinin arka planını ve yazı rengini belirleyin */
+#motorcycle_navbar li a {
+  display: block;
+  /* Öğeleri blok olarak görüntülemek için */
+  padding: 10px 15px;
+  /* Yatay ve dikey dolgu ekleyin */
+  text-decoration: none;
+  /* Altçizgi ekleyin */
+  color: #333;
+  /* Yazı rengi */
+  background-color: #fff;
+  /* Varsayılan arka plan rengi */
+  transition: background-color 0.3s ease;
+  /* Arka plan rengi geçiş efekti */
+}
+
+/* Öğelere mouse ile gelindiğinde hover efekti ekleyin */
+#motorcycle_navbar li a:hover {
+  background-color: #f2f2f2;
+  /* Hover rengi */
+}
+
+/* Dropdown menü öğelerini yatay düzeyde hizalayın */
+#motorcycle_navbar li {
+  display: inline-block;
+}
+
+/* Dropdown menü öğeleri arasında boşluk ekleyin */
+#motorcycle_navbar li+li {
+  margin-left: 10px;
+  /* İstenilen boşluk miktarı */
+}
+
+.container {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 2000px;
+  /*margin-left: 20px;*/
+  margin-right: 50px;
+}
+
+.list-group {
+  width: 200px;
+}
+
+.list-group-item {
+  padding: 4px 4px;
+  /* Özelleştirmek istediğiniz dolgu miktarını ayarlayabilirsiniz */
+}
+
+.list-group-item.active {
+  background-color: black;
+  /* Arka plan rengini siyah olarak ayarlar */
+  color: white;
+  /* Yazı rengini beyaz yapar ki metin siyah arka plan üzerinde görünebilsin */
+}
+
+    #BigVideoPlayer {
+      width: 1400px; 
+      height: 600px; 
+      margin: 0 auto 0 70px;
+  }
+ 
+  #RandomVideolar {
+    font-family: "Pacifico", cursive;
+    font-style:  italic;
+    font-weight: 750; 
+  } 
+
+  #SonEklenenVideolar {
+    font-family: "Pacifico", cursive;
+    font-style:  italic;
+    font-weight: 750; 
+  }
+
+
+
+body{
+  font-family: "Pacifico", cursive;
+  font-style:  italic;
+  font-weight: 750;
+}
+ 
+#headername{
+  font-family: "Pacifico", cursive;
+  font-style:  italic;
+  background-color: #a9a9a9;
+}
+

@@ -1,0 +1,287 @@
+{% extends "base.html" %} {% load static %} {% block title %} SignUp {%endblock%} {% block content %}
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+    integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+    crossorigin="anonymous"
+  />
+</head>
+
+<body>
+  <div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+      <div class="user_card">
+        <div class="d-flex justify-content-center">
+          <div class="brand_logo_container">
+            <img
+              src="static/blog/img/stable-diffusion-xl.jpg"
+              class="brand_logo"
+              alt="Logo"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center form_container">
+          <form>
+            <div class="input-group mb-3">
+              <div class="input-group-append">
+                <span class="input-group-text"
+                  ><i class="fas fa-user" id="IconName"></i
+                ></span>
+              </div>
+              <input
+                id="NewNameInput"
+                type="text"
+                name=""
+                class="form-control input_user"
+                value=""
+                placeholder="İsim..."
+              />
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-user" id="IconSurname"></i></span>
+              </div>
+              <input
+                id="NewUserSurnameInput"
+                type="text"
+                name=""
+                class="form-control input_pass"
+                value=""
+                placeholder="Soyisim..."
+              />
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-user" id="IconUsername"></i></span>
+              </div>
+              <input
+                id="NewUserNameInput"
+                type="text"
+                name=""
+                class="form-control input_pass"
+                value=""
+                placeholder="Kullanıcı Adı..."
+              />
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-key" id="IconPassword"></i></span>
+              </div>
+              <input
+                id="NewPasswordInput"
+                type="password"
+                name=""
+                class="form-control input_pass"
+                value=""
+                placeholder="Şifreniz..."
+              />
+            </div>
+
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fas fa-user" id="IconMail"></i></span>
+              </div>
+              <input
+                id="NewUserMailInput"
+                type="text"
+                name=""
+                class="form-control input_pass"
+                value=""
+                placeholder="Mail Adresiniz..."
+              />
+            </div>
+
+            {% comment %} buraya remember me eklenebilir {% endcomment %}
+
+            <div class="d-flex justify-content-center mt-3 login_container">
+              <button id="SignUpButton" type="button" name="button" class="btn login_btn">
+                Üye Ol
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-4">
+          <div class="d-flex justify-content-center links">
+            Zaten Hesabınız Var Mı? <br>
+            <a href="login_page" class="ml-2">Giriş Yap</a>
+          </div>
+        </div>
+
+        {% comment %}
+
+        <div class="mt-4">buraya şifrenizi mi unuttunuz eklenebilir</div>
+
+        {% endcomment %}
+      </div>
+    </div>
+  </div>
+</body>
+
+<style>
+
+    .custom-container {
+      color: white; /* Metin rengini beyaz yap */
+  }
+
+    		body,
+    		html {
+    			margin: 0;
+    			padding: 0;
+    			height: 100%;
+    			background: #a9a9a9 !important;
+    		}
+    		.user_card {
+    			height: 450px;
+    			width: 350px;
+    			margin-top: auto;
+    			margin-bottom: auto;
+    			background: #000000;
+    			position: relative;
+    			display: flex;
+    			justify-content: center;
+    			flex-direction: column;
+    			padding: 10px;
+    			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    			border-radius: 5px;
+
+    		}
+    		.brand_logo_container {
+    			position: absolute;
+    			height: 170px;
+    			width: 170px;
+    			top: -75px;
+    			border-radius: 50%;
+    			background: #a9a9a9;
+    			padding: 10px;
+    			text-align: center;
+    		}
+    		.brand_logo {
+    			height: 150px;
+    			width: 150px;
+    			border-radius: 50%;
+    			border: 2px solid white;
+    		}
+    		.form_container {
+    			margin-top: 100px;
+    		}
+    		.login_btn {
+    			width: 100%;
+    			background: #c0392b !important;
+    			color: white !important;
+    		}
+    		.login_btn:focus {
+    			box-shadow: none !important;
+    			outline: 0px !important;
+    		}
+    		.login_container {
+    			padding: 0 2rem;
+    		}
+    		.input-group-text {
+    			background: #c0392b !important;
+    			color: white !important;
+    			border: 0 !important;
+    			border-radius: 0.25rem 0 0 0.25rem !important;
+    		}
+    		.input_user,
+    		.input_pass:focus {
+    			box-shadow: none !important;
+    			outline: 0px !important;
+    		}
+    		.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+    			background-color: #c0392b !important;
+    		}
+        .d-flex justify-content-center links{
+          color
+        }
+        .links {
+          color: white; /* Metin rengini beyaz yap */
+          
+      }
+
+      #IconName{
+        width: 20px;
+        height: 27px;
+      }
+
+      #IconSurname{
+        width: 20px;
+        height: 27px;
+      }
+
+      #IconUsername{
+        width: 20px;
+        height: 27px;
+      }
+
+      #IconPassword{
+        width: 20px;
+        height: 27px;
+      }
+
+      #IconMail{
+        width: 20px;
+        height: 27px;
+      }
+
+
+</style>
+
+<script>
+  //yeni kullanıcı kayıt
+  $(document).ready(function () {
+    $("#SignUpButton").click(function() {
+      var NewName = $("#NewNameInput").val();
+      var NewSurname = $("#NewUserSurnameInput").val();
+      var NewUserName = $("#NewUserNameInput").val();
+      var NewPassword = $("#NewPasswordInput").val();
+      var NewMail = $("#NewUserMailInput").val();
+
+      // tüm alanlar dolduruldu mu kontrol et
+      if (
+        NewName === "" ||
+        NewSurname === "" ||
+        NewUserName === "" ||
+        NewPassword === "" ||
+        NewMail === "" 
+      ) {
+        alert("Lütfen Formu Eksiksiz Doldurunuz.");
+        return;
+      }
+
+      //tüm alanlar doldurulunca ajax isteği gönder
+      $.ajax({
+        type: "POST",
+        url: '{% url "new_user_record" %}',
+        data: {
+          'first_name': NewName,
+          'last_name': NewSurname,
+          'username': NewUserName,
+          'password': NewPassword,
+          'email': NewMail,
+          'csrfmiddlewaretoken': "{{ csrf_token }}"
+        },
+        success: function (response) {
+          alert("Kayıt Başarılı!");
+          location.reload();
+        },
+        error: function (response) {
+          alert("Kullanıcı kaydedilirken bir hata oluştu.");
+        }
+      });
+
+      
+    });
+  });
+
+  
+</script>
+
+{% endblock %}

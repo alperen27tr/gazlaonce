@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+      | GazlamadanÖnce
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/index.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700|Open+Sans:400,700&display=swap">
+    
+
+    {% block css_files %}
+    
+    {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'blog/js/jquery.js' %}"></script>
+    <script src="{% static 'blog/js/script.js' %}"></script>
+    <script src="{% static 'blog/js/base.js' %}"></script>
+  </head>
+
+  <body style="background-color: #a9a9a9;">
+    
+      {% include 'partials/_navbar.html' %}
+  
+      {% block content %}
+  
+      {% endblock %}
+  
+  
+      {% block sayfaiciJS %}
+  
+      {% endblock %}
+  
+  {% block footer %}
+    <footer class="page-footer font-small blue">
+      <div class="footer-copyright text-center py-3">
+        © 2024 Copyright:<p style="display: inline;">Alperen Erdoğan</p>
+      </div>
+    </footer>
+  </body>
+  {% endblock %}
+</html>

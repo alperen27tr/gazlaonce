@@ -1,0 +1,233 @@
+{% extends "base.html" %} {% block title%}Ana Sayfa{% endblock %} 
+{% block content %}
+<div class="container" style="background-color: #a9a9a9">
+  <div class="container-fluid pb-video-container" style="background-color: #a9a9a9">
+    <h3 id="SonEklenenVideolar"> Son Eklenen Videolar</h3>
+    <div class="row justify-content-center">
+      <div
+        id="videolarlistSlider"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#videolarlistSlider"
+            data-bs-slide-to="0"
+            class="active"
+            aria-current="true"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#videolarlistSlider"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#videolarlistSlider"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#videolarlistSlider"
+            data-bs-slide-to="3"
+            aria-label="Slide 4"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#videolarlistSlider"
+            data-bs-slide-to="4"
+            aria-label="Slide 5"
+          ></button>
+        </div>
+        <div class="carousel-inner">
+          <!-- Videolar burada dinamik olarak eklenir -->
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#videolarlistSlider"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#videolarlistSlider"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<iframe
+  controls
+  src=""
+  poster=""
+  style="margin: 0 auto 0 60px; display: none"
+  id="BigVideoPlayer"
+>
+  Sorry, your browser doesn't support embedded videos, but don't worry, you can
+  <a href="#">download it</a>
+  and watch it with your favorite video player!
+</iframe>
+
+{% comment %}
+<div class="container">
+  <div class="text-center my-2"></div>
+</div>
+{% endcomment %}
+
+<!-- Video Gallery - START -->
+<div class="container" style="background-color: #a9a9a9">
+  <div class="container-fluid pb-video-container" style="background-color: #a9a9a9">
+    <h3 id="RandomVideolar">Random Videolar</h3>
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <h3 id="headername" class="text-center" style="background-color: #a9a9a9"></h3>
+        <div id="videolarlist" class="row pb-row" style="background-color: #a9a9a9"></div>
+        <div class="row pb-row" style="background-color: #a9a9a9"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+  .carousel-slide img { 
+    max-width: 600px;
+    height: 1500px;
+  }
+  .container-fluid.pb-video-container h3 {
+    font-weight: bold;
+  }
+
+  #videolarlistSlider img {
+    width: 400%;
+    height: 500%;
+  }
+
+  .pb-video {
+    text-decoration: none !important;
+  }
+
+  #headername,
+  #videolarlist h3 {
+    text-decoration: none !important;
+  }
+
+  #BigVideoPlayer {
+    width: 40px; 
+    height: 40px;
+  }
+
+  #videolarlist .row::after {
+    display: none;
+  }
+   
+  
+
+  
+</style>
+
+{% block sayfaiciJS %}
+<script>
+  // Son eklenen videolar kısmı
+  $(document).ready(function () {
+    VideoGallery();
+    SlideVideo();
+  });
+
+  $(document).on("click", ".videoClick", function () {
+    var iframe = $(this).find("iframe");
+    var iframeSrc = iframe.attr("src");
+    var videoPlayer = $("#BigVideoPlayer");
+    videoPlayer.show();
+    videoPlayer.attr("src", iframeSrc);
+  });
+  function SlideVideo() {
+    $.ajax({
+      url: '{% url "get_data_index_videos" %}',
+      type: "GET",
+      dataType: "json",
+      success: function (video_data) {
+        renderVideos1(video_data);
+      },
+      error: function () {
+        $("#headername").text("Veri alınamadı.");
+      },
+    });
+  }
+
+  function renderVideos1(videoData) {
+    $.each(videoData, function (index, video) {
+      var link = video.link;
+      if (index == 0) {
+        var videoHTML =
+          '<div class="carousel-item active"  data-bs-interval="20000">' +
+          ' <div class="d-block w-100"><iframe width="70%" height="400px" src="' +
+          link +
+          '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' +
+          "</div></div>";
+
+        $("#videolarlistSlider").append(videoHTML);
+      } else {
+        var videoHTML =
+          '<div class="carousel-item"  data-bs-interval="4000">' +
+          '<div class="d-block w-100"><iframe width="70%" height="400px" src="' +
+          link +
+          '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' +
+          "</div></div>";
+        $("#videolarlistSlider").append(videoHTML);
+      }
+    });
+  }
+
+  function VideoGallery() {
+    $.ajax({
+      url: "video_gallery_index/",
+      type: "GET",
+      dataType: "json",
+      success: function (data) {
+        renderVideos(data);
+      },
+      error: function () {
+        $("#headername").text("Veri alınamadı.");
+      },
+    });
+  }
+
+  function renderVideos(videoData) {
+    $("#videolarlist").empty();
+
+    // Verileri işleme ve görüntüleme
+    $.each(videoData, function (index, video) {
+      var title = video.title;
+      var link = video.link;
+
+      // Verileri ekrana yazdırma
+      var videoHTML =
+        '<div class="col-md-3 pb-video videoClick"><a href="#BigVideoPlayer">' +
+        '<iframe width="100%" height="230" src="' +
+        link +
+        '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' +
+        '<label class="form-control label-warning text-center">' +
+        title +
+        "</label>" +
+        "</a></div>";
+
+      $("#videolarlist").append(videoHTML);
+    });
+  }
+</script>
+
+{% endblock %}

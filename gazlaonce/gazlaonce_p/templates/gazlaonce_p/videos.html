@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<center>
+    <div style="display: inline-block;">
+        <h1 id="anakategoriheader">
+        </h1>
+    </div>
+
+</center>
+
+<center>
+        <div id="buttonCategori" style="display: inline-block;">
+        </div>
+</center>
+
+
+<iframe controls src="" poster=""  style="margin: 0 auto 0 70px; display: none;" id="BigVideoPlayer">
+  Sorry, your browser doesn't support embedded videos, but don't worry, you can
+  <a href="#">download it</a>
+  and watch it with your favorite video player!
+</iframe>
+
+  <!-- Video Gallery - START -->
+  <div class="container">
+    <div class="container-fluid pb-video-container" style="background-color: #a9a9a9;">
+      <div class="row justify-content-center" >
+        <div class="col-md-10" >
+          <h3 id="headername" class="text-center" ></h3>
+          <div id="videolarlist" class="row pb-row">
+          </div>
+          <div class="row pb-row">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <style>
+    #BigVideoPlayer {
+      width: 1400px; 
+      height: 600px; 
+      margin: 0 auto 0 70px;
+  }
+  </style>
+
+  <script>
+    $(document).ready(function () {
+
+      var baseCategory = getUrlParameter('category_id')
+    
+      $(document).on("click", ".videoClick", function () {
+        var iframe = $(this).find("iframe");
+        var iframeSrc = iframe.attr("src");
+        var videoPlayer = $("#BigVideoPlayer");
+        videoPlayer.show();
+        videoPlayer.attr("src", iframeSrc);
+    });
+    
+      $.ajax({
+        url: '{% url "get_data_header" %}?basecategory_id=' + baseCategory,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          $.each(data, function (index, categori) {
+            var base_category_names = categori.base_category_names
+            $('#anakategoriheader').text(base_category_names)
+          })
+        },
+        error: function () {
+          $('#headername').text('Veri alınamadı.')
+        }
+      });
+
+    //Buttonlar
+    $.ajax({
+        url: '{% url "get_data_subcategories" %}?basecategory_id=' + baseCategory,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            $.each(data, function (index, categori) {
+                var id = categori.id;
+                var categoriesName = categori.categoriesName;
+                var buttonCategoriHTML = '<button type="button" data-category-id="' + id + '" class="btn btn-outline-primary me-2" style="background-color: black; color:white;">' + categoriesName + '</button>';
+                $("#buttonCategori").append(buttonCategoriHTML);
+            });
+        },
+        error: function () {
+            $('#headername').text('Veri alınamadı.');
+        }
+    });
+    
+    //Tıklanınca gelen Videolar
+    $("#buttonCategori").on("click", "button", function () {
+        var categoryId = $(this).data("category-id");
+        fetchVideos(categoryId, baseCategory);
+    });
+    function fetchVideos(categoryId, baseCategory) {
+        $.ajax({
+            url: '{% url "get_data" %}?category_id=' + categoryId + '&basecategory_id=' + baseCategory,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                renderVideos(data);
+            },
+            error: function () {
+                $('#headername').text('Veri alınamadı.');
+            }
+        });
+    }
+    function renderVideos(videoData) {
+        $("#videolarlist").empty();
+
+        // Verileri işleme ve görüntüleme
+        $.each(videoData, function (index, video) {
+            var title = video.title;
+            var link = video.link;
+            var categories = video.categories;
+
+            // Verileri ekrana yazdırma veya istediğiniz işlemi yapma  
+            var videoHTML = '<div class="col-md-3 pb-video">' +
+                '<iframe width="100%" height="230" src="' + link + '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' +
+                '<label class="form-control label-warning text-center">' + title + '</label>' +
+                '</div>';
+
+            $("#videolarlist").append(videoHTML);
+        });
+    }
+      //videos sayfası açılınca kategoriye göre video getirme
+      $.ajax({
+        url: '{% url "get_data_opened_video_page_videos"%}?basecategory_id=' + baseCategory,
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          var videoData = data
+          $.each(videoData, function (index, video) {
+            var title = video.title
+            var link = video.link
+            var is_active = video.is_active
+    
+            var videoHTML = '<div class="col-md-3 pb-video videoClick">' + '<iframe class="" width="100%" height="230" src="' + link + '" title="YouTube video player" frameborder="0" allowfullscreen></iframe>' + '<label class="form-control label-warning text-center">' + title + '</label>' + '</div>'
+    
+            $('#videolarlist').append(videoHTML)
+          })
+        },
+        error: function () {
+          $('#headername').text('Veri alınamadı.')
+        }
+      })
+    })
+        
+    //urleden base cat alma
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)')
+      var results = regex.exec(location.search)
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
+    }
+  
+  </script>
+
+{% endblock %}
